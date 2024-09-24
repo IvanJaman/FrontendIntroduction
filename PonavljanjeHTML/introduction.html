@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Introduction</title>
+ <h1>Introduction</h1>
+</head>
+
+<body>
+ <p>Please insert user info:</p>
+ <script src="functions.js"></script>
+ <form onsubmit="return SaveToLocalStorage()">
+  <label for="firstName">First name:</label><br>
+  <input type="text" id="firstName" name="firstName"><br>
+  <label for="lastName">Last name:</label><br>
+  <input type="text" id="lastName" name="lastName"><br>
+  <input type="submit" value="Submit">
+  <input type="reset" value="Clear">
+ </form> 
+ 
+ <p>Update user info:</p>
+ <script src="functions.js"></script>
+ <form onsubmit="return UpdateLocalStorage()">
+  <label for="firstNameUpdate">First name:</label><br>
+  <input type="text" id="firstNameUpdate" name="firstName"><br>
+  <label for="lastNameUpdate">Last name:</label><br>
+  <input type="text" id="lastNameUpdate" name="lastName"><br>
+  <label for="id">Id:</label><br>
+  <input type="text" id="id" name="id"><br>
+  <input type="submit" value="Submit">
+ </form> 
+ 
+ <p>Delete user:</p>
+ <script src="functions.js"></script>
+ <form onsubmit="return DeleteUserFromLocalStorage()">
+  <label for="deleteId">Id:</label><br>
+  <input type="text" id="deleteId" name="deleteId"><br>
+  <input type="submit" value="Delete">
+ </form> 
+ 
+ <button onclick="ClearLocalStorage()">Clear All Data</button>
+
+ <table id="userTable">
+  <tr>
+    <th>Id</th>
+    <th>FirstName</th>
+    <th>LastName</th>
+  </tr>
+</table> 
+</body>
+</html>
