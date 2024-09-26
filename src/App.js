@@ -3,12 +3,25 @@ import { Button } from './Button';
 import { Table } from './Table';
 import { InputBar } from './InputBar';
 import { useState, useEffect  } from 'react';
+import axios from 'axios';
 
 function App() {
-  const [firstName, setFirstName] = useState(''); 
-  const [lastName, setLastName] = useState(''); 
+  const [user, setUser] = useState({firstName: '', lastName: '' });
   const [users, setUsers] = useState([]);
   const [editId, setEditId] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get('https://localhost:7267/User/GetAll')
+      .then(response => {
+          console.log(response.data)
+        setUsers(response.data);
+        saveToLocalStorage(response.data);
+      })
+      .catch(error => {
+        console.log('There was an error fetching the users!');
+      });
+  }, []);
 
   const saveToLocalStorage = (data) => {
     localStorage.setItem('users', JSON.stringify(data));
@@ -27,14 +40,14 @@ function App() {
   }, []);
 
   const handleSubmit = () => {
-    if(!firstName || !lastName){
+    if(!user.firstName || !user.lastName){
       alert("Please provide a user.");
     }
     else{
       if (editId !== null) {
         const updatedTable = users.map(item =>
           item.id === editId
-            ? { ...item, firstName: firstName, lastName: lastName }
+            ? { ...item, ...user }
             : item
         );
         setUsers(updatedTable);
@@ -42,37 +55,46 @@ function App() {
         setEditId(null);
       } 
     else {
-      const newData = { id: Date.now(), firstName: firstName, lastName: lastName };
+      const newData = { id: Date.now(), ...user};
       const updatedTable = [...users, newData];
       setUsers(updatedTable);
       saveToLocalStorage(updatedTable); 
     }
-    setFirstName(''); 
-    setLastName(''); 
+    setUser({ firstName: '', lastName: '' });
     }
   };
 
   const handleEdit = (id, firstName, lastName) => {
     setEditId(id);
-    setFirstName(firstName);
-    setLastName(lastName);
+    setUser({ firstName, lastName });
   };
 
   const handleDelete = (id) => {
-    const updatedTable = table.filter(item => item.id !== id);
-    setUsers(updatedTable);
-    saveToLocalStorage(updatedTable);
+    axios.delete(`http://localhost:7267/User/${id}`)
+      .then(() => {
+        const updatedTable = users.filter(item => item.id !== id);
+        setUsers(updatedTable);
+        saveToLocalStorage(updatedTable);
+        console.log('User successfully deleted');
+      })
+      .catch(error => { 
+        console.log('There was an error deleting the user!', error);
+      });
   };
 
   return (
     <div className="App">
       <header className="App-header">
-        <h1>MyReactApp</h1>
-        <h2>{editId ? 'Edit user info:' : 'Enter user info:'}</h2>
-        <InputBar inputValue={firstName} setInputValue={setFirstName} placeholder="First Name" />
-        <InputBar inputValue={lastName} setInputValue={setLastName} placeholder="Last Name" />
-        <Button handleSubmit={handleSubmit} />
-        <Table data={users} onEdit={handleEdit} onDelete={handleDelete}/>
+        <form>
+          <div className="LoginDiv">
+            <h1>Welcome to MyReactApp</h1>
+            <h2>{editId ? 'Edit user info:' : 'Enter user info:'}</h2>
+            <InputBar inputValue={user.firstName} setInputValue={(value) => setUser({ ...user, firstName: value })} placeholder="First Name" />
+            <InputBar inputValue={user.lastName} setInputValue={(value)=> setUser({ ...user, lastName: value })} placeholder="Last Name" />
+            <Button handleSubmit={handleSubmit} />
+            <Table data={users} onEdit={handleEdit} onDelete={handleDelete}/>
+          </div>
+        </form>
       </header>
     </div>
   );

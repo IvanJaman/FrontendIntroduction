@@ -2,6 +2,12 @@
   text-align: center;
 }
 
+.LoginDiv{
+  border-radius: 20px;
+  color: black;
+  background-color: #F2F0EF;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -26,6 +32,7 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
+  border-radius: 20px;
 }
 
 .App-link {
